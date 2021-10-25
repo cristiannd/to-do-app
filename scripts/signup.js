@@ -1,22 +1,105 @@
 window.addEventListener('load', function(){
-  const registro = this.document.forms[0];
+  const register = document.forms[0];
+  const url = "https://ctd-todo-api.herokuapp.com/v1"
 
-  const nombre = document.querySelector("#nombre");
-  const apellido = document.querySelector("#apellido");
+  const firstName = document.querySelector("#nombre");
+  const lastName = document.querySelector("#apellido");
   const email = document.querySelector("#email");
   const password1 = document.querySelector("#password1");
   const password2 = document.querySelector("#password2");
+  
+  const errorName = document.querySelector("#errorName");
+  const errorLastName = document.querySelector("#errorLastName");
+  const errorEmail = document.querySelector("#errorEmail");
+  const errorPassword1 = document.querySelector("#errorMessagePass1");
+  const errorPassword2 = document.querySelector("#errorMessagePass2");
 
-  registro.addEventListener('submit', function(event){
-    event.preventDefault();    
-    validarNombre(nombre);
+  const userRegister = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: ""
+  }
+
+  register.addEventListener('submit', e => {
+    e.preventDefault();  
+    
+    isFirstNameValid();
+    isLastNameValid();
+    isEmailValid();
+    isPasswordValid();
+
+    succesfulRegistration();
   });
+  
+  const isFirstNameValid = () => {
+    if(firstName.value.length === 0) {
+      errorName.innerText = "El campo no puede quedar vacío";
+    } else {
+      errorName.innerText = "";
+      userRegister.firstName = firstName.value;
+    }
+  }
+  
+  const isLastNameValid = () => {
+    if(lastName.value.length === 0) {
+      errorLastName.innerText = "El campo no puede quedar vacío";
+    } else {
+      errorLastName.innerText = "";
+      userRegister.lastName = lastName.value;
+    }
+  }
+  
+  const isEmailValid = () => {
+    if(email.value.length === 0) {
+      errorEmail.innerText = "El campo no puede quedar vacío";
+    } else {
+      errorEmail.innerText = "";
+      userRegister.email = email.value;
+    }
+  }
+  
+  const isPasswordValid = () => {
+    if(password1.value.length === 0) {
+      errorPassword1.innerText = "El campo no puede quedar vacío";
+    } else {
+      errorPassword1.innerText = "";
+    }
+  
+    if(password2.value.length === 0) {
+      errorPassword2.innerText = "El campo no puede quedar vacío";
+      return;
+    } else {
+      errorPassword2.innerText = "";
+    }
 
-  function validarNombre(nombre) {
-    if(nombre.value.length === 0) console.log("El nombre no puede estar vacío");
+    if(password1.value !== password2.value) {
+      errorPassword1.innerText = "Las contraseñas deben coincidir";
+      errorPassword2.innerText = "Las contraseñas deben coincidir";
+      return;
+    } else {
+      errorPassword1.innerText = "";
+      errorPassword2.innerText = "";
+      userRegister.password = password2.value;
+    }
+  }
 
-    for(let i=0; i<nombre.value.length; i++){
-      if(nombre.value[i] === "0" || nombre.value[i] === "1" || nombre.value[i] === "2" || nombre.value[i] === "3" || nombre.value[i] === "4" || nombre.value[i] === "5" || nombre.value[i] === "6" || nombre.value[i] === "7" || nombre.value[i] === "8" || nombre.value[i] === "9") console.log("El campo nombre no puede contener números")
+  const succesfulRegistration = () => {
+    if(userRegister.firstName.length > 0 && userRegister.lastName.length > 0 && userRegister.email.length > 0 && userRegister.password.length > 0) {
+      const settings = {
+        method: "POST",
+        body: JSON.stringify(userRegister),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+      
+      fetch(`${url}/users`, settings)
+        .then(res => res.json())
+        .then(res => console.log(res))
+        .catch(e => console.log(e))
+      
+      register.reset();
     }
   }
 })
