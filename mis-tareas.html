@@ -21,7 +21,7 @@
 
 
   <!-- logica de la página -->
-  <script src="./scripts/tasks.js"></script>
+  <script src="./scripts/tasks.js" defer></script>
 
   <title>ToDo</title>
 </head>
@@ -30,18 +30,15 @@
     <nav>
       <a href="#">My ToDo's</a>
     </nav>
-
     <div class="user-info">
-      <p>username</p>
+      <p></p>
       <div class="user-image"></div>
       <p id="closeApp">Cerrar sesión</i>
       </p>
     </div>
   </header>
-
-
   <form class="nueva-tarea" id="formulario-agregar-tarea">
-    <div class="not-done "></div>
+    <div class="not-done"></div>
     <input id="nuevaTarea" type="text" placeholder="Nueva tarea">
     <button type="submit">
       <img src="./assets/plus.png" alt="Agregar Tarea">
@@ -49,22 +46,12 @@
   </form>
   <ul class="tareas-pendientes">
     <div id="skeleton">
-      <li class="tarea">
-        <div class="not-done"></div>
-        <div class="descripcion">
-          <p class="nombre">Tarea1</p>
-          <p class="timestamp">10/12/2021</p>
-        </div>
-      </li>
     </div>
   </ul>
-
   <h2 class="titulo-terminadas">Tareas terminadas</h2>
   <ul class="tareas-terminadas">
     <div id="skeleton">
     </div>
   </ul>
-
 </body>
-
 </html>

@@ -101,21 +101,7 @@ window.addEventListener('load', function(){
             errorEmail.innerText = "El email ya se encuentra en uso"
           } else {
             sessionStorage.setItem("key", res.jwt);
-            // errorEmail.innerText = ""
-            // register.reset();
-            
-            fetch(`${url}/tasks`, {
-              method: "GET",
-              headers: {
-                "authorization": res.jwt
-              }
-            })
-            .then(res => res.json)
-            .then(res => {
-              console.log(res)
-              // window.location.pathname = "/mis-tareas.html";
-            })
-            .catch(err => console.log("Error: " + err))
+            window.location.href = "/mis-tareas.html"
           }
         })
         .catch(err => {
