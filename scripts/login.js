@@ -1,11 +1,11 @@
 window.addEventListener('load', function () {
-  const url = 'https://ctd-todo-api.herokuapp.com/v1'
-  const formulario = this.document.forms[0]
-  const inputEmail = this.document.querySelector('#inputEmail')
-  const inputPassword = this.document.querySelector('#inputPassword')
+  const urlBase = 'https://ctd-todo-api.herokuapp.com/v1';
+  const formulario = this.document.forms[0];
+  const inputEmail = this.document.querySelector('#inputEmail');
+  const inputPassword = this.document.querySelector('#inputPassword');
 
   formulario.addEventListener('submit', e => {
-    e.preventDefault()
+    e.preventDefault();
 
     validarEmail(inputEmail.value);
     validarPassword(inputPassword.value);
@@ -15,11 +15,12 @@ window.addEventListener('load', function () {
       password: inputPassword.value,
     }
 
-    fetch(`${url}/users/login`, {
+    fetch(`${urlBase}/users/login`, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
+        'permissions-policy': 'interest-cohort'
       },
     })
       .then(res => res.json())
