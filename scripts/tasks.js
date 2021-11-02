@@ -3,13 +3,14 @@ window.addEventListener('load', function () {
   const urlBase = 'https://ctd-todo-api.herokuapp.com/v1';
   const formAddTask = document.querySelector('#formulario-agregar-tarea');
   const newTask = document.querySelector('#nuevaTarea');
-  const skeletonPending = document.querySelector('.tareas-pendientes #skeleton');
-  const skeletonCompleted = document.querySelector('.tareas-terminadas #skeleton');
+  const skeletonPending = document.querySelector('.tareas-pendientes .skeleton');
+  const skeletonCompleted = document.querySelector('.tareas-terminadas .skeleton');
   const nodoUserName = document.querySelector('.user-info p');
+  const nodoUserImage = document.querySelector('.user-info .user-image');
+  const nodoUserImage2 = document.querySelector("#formulario-agregar-tarea > div");
   const nodoCloseSession = document.querySelector('.user-info #closeApp');
   let arrPending = [];
   let arrCompleted = [];
-  const skeleton = document.querySelectorAll('#skeleton');
 
   const getUser = url => {
     const parameters = {
@@ -20,66 +21,13 @@ window.addEventListener('load', function () {
 
     fetch(`${url}/users/getMe`, parameters)
       .then(res => res.json())
-      .then(data => nodoUserName.innerText = `${data.firstName} ${data.lastName}`)
+      .then(data => {
+        nodoUserName.innerText = `${data.firstName} ${data.lastName}`;
+        nodoUserImage.innerText = data.firstName[0] + data.lastName[0];
+        nodoUserImage2.innerHTML = data.firstName[0] + data.lastName[0];
+      })
       .catch(err => console.log(err))
   };
-
-  // const getTasks = url => {
-  //   const parameters = {
-  //     headers: {
-  //       authorization: sessionKey,
-  //     }
-  //   }
-
-  //   fetch(`${url}/tasks`, parameters)
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       skeletonCompleted.innerHTML = '';
-  //       skeletonPending.innerHTML = '';
-
-  //       data.forEach(e => {
-  //         const date = new Date(e.createdAt);
-  //         const day = date.getDate();
-  //         const mouth = date.getMonth() + 1;
-  //         const year = date.getFullYear();
-
-  //         if (e.completed === false) {
-  //           skeletonPending.innerHTML += `
-  //             <li class="tarea change" id=${e.id}>
-  //               <div class="not-done"></div>
-  //               <div class="descripcion">
-  //                 <p class="nombre">${e.description}</p>
-  //                 <p class="timestamp">${day}/${mouth}/${year}</p>
-  //               </div>
-  //             </li>`
-  //         } else {
-  //           skeletonCompleted.innerHTML += `
-  //           <li class="tarea">
-  //             <div class="done"></div>
-  //             <div class="descripcion">
-  //               <p class="nombre">${e.description}</p>
-  //               <div>
-  //                 <button><i id="${e.id}" class="fas fa-undo-alt change"></i></button>
-  //                 <button><i id="${e.id}" class="far fa-trash-alt"></i></button>
-  //               </div>
-  //             </div>
-  //           </li>`
-  //         }
-  //       })
-  //     })
-  //     .then(() => {
-  //       const nodoChange = document.querySelectorAll('.change');
-
-  //       nodoChange.forEach(e => {
-  //         if(e.classList.contains("fa-undo-alt")){
-  //           arrCompleted.push(e);
-  //         } else {
-  //           arrPending.push(e);
-  //         }
-  //       });
-  //     })
-  //     .catch(err => console.log(err))
-  // };
 
   const getTasks = url => {
     skeletonPending.innerHTML = '';
@@ -120,8 +68,8 @@ window.addEventListener('load', function () {
       const year = date.getFullYear();
 
       skeletonPending.innerHTML += `
-        <li class="tarea change">
-          <div class="not-done" id=${e.id}></div>
+        <li class="tarea">
+          <div class="not-done change" id=${e.id}></div>
           <div class="descripcion">
             <p class="nombre">${e.description}</p>
             <p class="timestamp">${day}/${mouth}/${year}</p>
@@ -166,9 +114,9 @@ window.addEventListener('load', function () {
       })
       .catch(err => console.log(err))
   };
-  
-  const changeTask = (url, id, key) => {
-    const payload = { completed: true };
+
+  const changeTask = (url, id, key, completed) => {
+    const payload = { completed: completed };
 
     const parameters = {
       method: 'PUT',
@@ -181,18 +129,27 @@ window.addEventListener('load', function () {
 
     fetch(`${url}/tasks/${id}`, parameters)
       .then(() => {
-        // getTasks(url)
         const auxPending = [];
+        const auxCompleted = [];
+
         arrPending.forEach(e => {
           if(e.id !== parseInt(id)){
             auxPending.push(e)
           } else {
-            arrCompleted.push(e)
-            console.log(arrCompleted)
+            auxCompleted.push(e)
           }
-        })
+        });
+
+        arrCompleted.forEach(e => {
+          if(e.id === parseInt(id)){
+            auxPending.push(e)
+          } else {
+            auxCompleted.push(e)
+          }
+        });
 
         arrPending = auxPending;
+        arrCompleted = auxCompleted;
         renderTasks(arrPending, arrCompleted);
       })
       .catch(err => console.log(err))
@@ -219,22 +176,28 @@ window.addEventListener('load', function () {
         renderTasks(arrPending, arrCompleted);
       })
       .catch(err => console.log(err))
-  }
+  };
 
-  skeletonPending.addEventListener('click', e => {
-    const idFocus = e.target.id;
-    changeTask(urlBase, idFocus, sessionKey);
-  });
 
-  skeletonCompleted.addEventListener('click', e => {
+
+  document.addEventListener('click', e => {
     const idFocus = e.target.id;
-    deleteTask(urlBase, idFocus, sessionKey);
-    renderTasks(arrPending, arrCompleted);
+
+    if(e.target.classList.contains('change') && e.target.classList.contains('fas')) {
+      changeTask(urlBase, idFocus, sessionKey, false);
+    } else if(e.target.classList.contains('change') && e.target.classList.contains('not-done')) {
+      changeTask(urlBase, idFocus, sessionKey, true);
+    } else if(e.target.classList.contains('delete')) {
+      deleteTask(urlBase, idFocus, sessionKey);
+      renderTasks(arrPending, arrCompleted);
+    }
   })
 
   nodoCloseSession.addEventListener('click', () => {
-    sessionStorage.removeItem('key');
-    location.href = '/index.html';
+    if(confirm("¿Desea cerra sesión?")) {
+      sessionStorage.removeItem('key');
+      location.href = '/index.html';
+    }
   });
 
   formAddTask.addEventListener('submit', e => {

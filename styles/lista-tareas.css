@@ -35,9 +35,14 @@ a {
   background-color: white;
   opacity: .4;
   margin-left: .7em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #7d27ee;
+  font-size: 18px;
 }
 
-#closeApp{
+#closeApp {
   margin-left: 15px;
   font-size: .7em;
   background-color: rgb(218, 88, 88);
@@ -45,6 +50,11 @@ a {
   border-radius: 50vh;
   padding: 5px 10px;
   cursor: pointer;
+  transition: .25s;
+}
+
+#closeApp:hover {
+  background-color: rgb(218, 30, 30);
 }
 
 /* Nueva tarea ----------------------------------------------------------- */
@@ -67,7 +77,7 @@ a {
   flex: 1;
   border-bottom: 1px solid lightgrey;
   border-radius: 0;
-  padding: .3em;
+  padding: .3em .3em .3em 0em;
   font-size: 1.1em;
 }
 
@@ -78,7 +88,6 @@ a {
 
 .nueva-tarea input::placeholder {
   color: rgb(197, 197, 197);
-  text-indent: .2em;
 }
 
 .nueva-tarea button {
@@ -109,6 +118,15 @@ a {
   cursor: pointer;
   text-align: center;
   color: grey;
+}
+
+#formulario-agregar-tarea > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: auto;
+  font-size: 15px;
+  color: #8E64C5;
 }
 
 /* Lista de tareas ----------------------------------------------------------- */
@@ -172,6 +190,43 @@ a {
   background-color: white;
   padding: 1em 2em;
   box-shadow: 2px 2px 5px lightgrey;
+  overflow: hidden;
+}
+
+.tarea .descripcion .nombre {
+  max-width: 88%;
+  overflow: hidden;
+  text-align: justify;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tarea .descripcion .change {
+  font-size: 18px;
+}
+
+.tarea .descripcion .change:hover {
+  animation: rotateChangeTask 1s linear infinite;
+  color: #8E64C5;
+}
+
+@keyframes rotateChangeTask {
+  from {
+    transform: rotate(0deg)
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.tarea .descripcion .delete {
+  font-size: 18px;
+  transition: .3s;
+}
+
+.tarea .descripcion .delete:hover {
+  color:rgb(218, 30, 30);
 }
 
 .tarea .nombre {
@@ -229,24 +284,12 @@ a {
 #skeleton .descripcion{
   background-color: rgb(189, 189, 189);
 }
+
 #skeleton p{
   background-color: rgb(214, 214, 214);
-  /* color: rgb(214, 214, 214); */
-  color: rgb(0, 0, 0);
   height: 25px;
   display: flex;
   align-items: center;
   padding: 0px 5px;
   border-radius: 5px;
-}
-#skeleton .not-done{
-  background-color: rgb(189, 189, 189);
-}
-
-#skeleton{
-  /* animation: trasparencia 1s infinite; */
-}
-@keyframes trasparencia {
-  0%{ opacity: 0.5;}
-  100%{ opacity: 0.8;}
 }
